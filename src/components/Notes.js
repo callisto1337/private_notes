@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import ListItem from './ListItem';
-import NewItem from './NewItem';
+import NotesItem from './NotesItem';
+import NewNote from './NewNote';
 import URLS from '../constants/urls';
 
 class List extends Component {
@@ -26,10 +26,8 @@ class List extends Component {
     };
 
     render() {
-        console.log(this.state);
-
         const listNotes = this.state.notes.map((note, index) =>
-            <ListItem
+            <NotesItem
                 key={note.id}
                 data={note}
                 getNotes={this.getNotes}
@@ -38,7 +36,7 @@ class List extends Component {
 
         return (
             <div className="mt-5">
-                <NewItem
+                <NewNote
                     getNotes={this.getNotes}
                 />
                 {listNotes}

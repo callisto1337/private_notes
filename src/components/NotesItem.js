@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Button} from "react-bootstrap";
 import URLS from "../constants/urls";
 
-class ListItem extends Component {
+class NotesItem extends Component {
     constructor(props) {
         super(props);
 
@@ -33,15 +33,37 @@ class ListItem extends Component {
         }
     };
 
+    convertedDate(date) {
+        const parsedDate = date.split(`T`)[0].split(`-`);
+        const day = parsedDate[2];
+        const month = parseInt(parsedDate[1]);
+        const year = parseInt(parsedDate[0]);
+        const months = [
+            `января`,
+            `февраля`,
+            `марта`,
+            `апреля`,
+            `мая`,
+            `июня`,
+            `июля`,
+            `августа`,
+            `сентября`,
+            `октября`,
+            `ноября`,
+            `декабря`,
+        ];
+
+        return `${day} ${months[month]}, ${year}`;
+    }
+
     render() {
         return (
             <div className="mt-4">
                 <h2 className="h6">
-                    {this.state.date}
+                    {this.convertedDate(this.state.date)}
                 </h2>
                 <div className="card mt-2">
                     <div className="card-body">
-                        {this.state.id}
                         <p className="card-text">
                             {this.state.text}
                         </p>
@@ -57,4 +79,4 @@ class ListItem extends Component {
     }
 }
 
-export default ListItem;
+export default NotesItem;
