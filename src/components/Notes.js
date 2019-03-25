@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import NotesItem from './NotesItem';
 import NewNote from './NewNote';
 import URLS from '../constants/urls';
+import {Alert} from 'react-bootstrap';
 
 class List extends Component {
     constructor(props) {
@@ -26,7 +27,7 @@ class List extends Component {
     };
 
     render() {
-        const listNotes = this.state.notes.map((note, index) =>
+        const listNotes = this.state.notes.map(note =>
             <NotesItem
                 key={note.id}
                 data={note}
@@ -39,7 +40,15 @@ class List extends Component {
                 <NewNote
                     getNotes={this.getNotes}
                 />
-                {listNotes}
+                {this.state.notes.length ?
+                    listNotes :
+                    <Alert
+                        variant="primary"
+                        className="mt-3"
+                    >
+                        Заметок пока нет. Пора создать первую!
+                    </Alert>
+                }
             </div>
         );
     }

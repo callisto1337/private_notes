@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-const config = require(`./backend/config/example.db`);
+const config = require(`../configs/db`);
 const pool = mysql.createPool(config);
 
 /**
@@ -31,17 +31,23 @@ const saveNote = (req, res) => {
     pool.getConnection((error, connection) => {
         const text = req.body.text;
         const date = req.body.date;
-        const errors = {};
+        const errors = [];
 
         if (!text) {
-            errors.text = `Укажите текст заметки`;
+            errors.push({
+                field: `text`,
+                text: `Укажите текст заметки!`
+            });
         }
 
         if (!date) {
-            errors.date = `Укажите дату заметки`;
+            errors.push({
+                field: `date`,
+                text: `Укажите дату заметки!`
+            });
         }
 
-        if (Object.keys(errors).length) {
+        if (errors.length) {
             res.send({
                 errors,
                 success: false

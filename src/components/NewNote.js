@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import React, {Component} from 'react';
+import {Button, Modal, Alert} from 'react-bootstrap';
 import URLS from '../constants/urls';
 
 class NewNote extends Component {
@@ -7,15 +7,16 @@ class NewNote extends Component {
         super(props);
         this.state = {
             showModal: false,
-            text: ``
+            text: ``,
+            errors: []
         };
     }
 
     createDateNow = () => {
         let date = new Date();
         date = date.getUTCFullYear() + '-' +
-            ('00' + (date.getUTCMonth()+1)).slice(-2) + '-' +
-            ('00' + date.getUTCDate()).slice(-2);
+            ('00' + (date.getMonth()+1)).slice(-2) + '-' +
+            ('00' + date.getDate()).slice(-2);
         return date;
     };
 
@@ -32,24 +33,42 @@ class NewNote extends Component {
             method: `POST`,
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                text: this.state.text,
+                text: this.state.text.trim(),
                 date: this.createDateNow()
             })
         })
             .then(resp => resp.json())
             .then(resp => {
-                if (resp.success) {
-                    this.props.getNotes();
-                    this.toggleViewModal();
-                    this.setState({text: ``});
+                if (!resp.success) {
+                    this.setState({errors: resp.errors});
+                    return;
                 }
+
+                this.props.getNotes();
+                this.toggleViewModal();
+                this.setState({
+                    text: ``,
+                    errors: []
+                });
             });
     };
 
     render() {
+        const errors = this.state.errors.map((error, index) =>
+             <p
+                 key={index}
+                 className="m-0"
+             >
+                 {error.text}
+             </p>
+        );
+
         return (
             <div>
                 <Modal
+                    autoFocus={false}
+                    enforceFocus={false}
+                    restoreFocus={false}
                     show={this.state.showModal}
                     onHide={this.toggleViewModal}
                 >
@@ -66,6 +85,14 @@ class NewNote extends Component {
                             className="form-control"
                             rows="5"
                         />
+                        {this.state.errors.length !== 0 &&
+                            <Alert
+                                variant="danger"
+                                className="mt-3"
+                            >
+                                {errors}
+                            </Alert>
+                        }
                     </Modal.Body>
 
                     <Modal.Footer>
